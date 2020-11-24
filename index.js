@@ -8,14 +8,20 @@ const params = {
 }
 
 const formData = new FormData();
-formData.append('syumoku', 'バスケットボール');
-formData.append('month', '12');
-formData.append('day', '05');
-formData.append('joken', '2');
-formData.append('kyoyo1', '07');
-formData.append('kyoyo2', '07');
-formData.append('chiiki', '20');
-formData.append('submit', 'submit')
+formData.append('vlinefield', '40968');
+
+formData.append('system1', '0');
+formData.append('system2', '0');
+
+formData.append('syumokunm', 'バスケットボール');
+
+formData.append('page', '0');
+formData.append('flg', '0');
+
+formData.append('kyoyo1nm', '07');
+formData.append('kyoyo2nm', '07');
+formData.append('chiikinm', '20');
+formData.append('button', '照会')
 
 const axiosParam = {
     method: 'post',
@@ -35,10 +41,12 @@ axios(axiosParam)
         console.log(err)
     })
 
-// formData.submit(url, (err, res) => {
+// var result = formData.submit(url, (err, res) => {
 //     console.log(res.statusCode);
-//     console.log(res)
+//     console.log(res) 
 // });
+
+
 
 // axios(url, formData)
 //     .then(res => {
