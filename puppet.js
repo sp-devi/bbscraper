@@ -8,7 +8,7 @@ async function run () {
     // Select boxes
     await page.select('select[name="syumoku"]', '023');
     await page.select('select[name="month"]', '12');
-    await page.select('select[name="day"]', '07');
+    await page.select('select[name="day"]', '18');
     await page.select('select[name="kyoyo1"]', '07');
     await page.select('select[name="kyoyo2"]', '07');
     await page.select('select[name="chiiki"]', '20');
@@ -26,7 +26,11 @@ async function run () {
         // }
         const list = document.querySelectorAll('.RESOUTPUT2');
         for (const a of list) {
-            data.push({'lo': a.innerHTML});
+            data.push({
+                'name': a.innerText,
+                'link': a.querySelector('a').href
+
+            });
         }
         return data;
     })
