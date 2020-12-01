@@ -17,18 +17,15 @@ async function run () {
 
     await page.waitFor(5000);
     const list = await page.evaluate(() => {
-        let data = []            /** this can be changed for other website.*/
-        // const list = document.querySelectorAll('form');
-        // for (const a of list) {
-        //     data.push({
-        //         'link': a.querySelector('.RESLABEL2').innerText
-        //     })
-        // }
+        let data = [];
         const list = document.querySelectorAll('.RESOUTPUT2');
         for (const a of list) {
+            var schedule = a.nextElementSibling.nextElementSibling;
             data.push({
                 'name': a.innerText,
-                'link': a.querySelector('a').href
+                'link': a.querySelector('a').href,
+                'date': a.nextElementSibling.innerText,
+                'schedule': schedule.innerText
 
             });
         }
@@ -36,7 +33,7 @@ async function run () {
     })
     console.log(list);
 
-    await page.screenshot({path: 'screenshot.png'});
+    //await page.screenshot({path: 'screenshot.png'});
     browser.close();
 }
 run();
