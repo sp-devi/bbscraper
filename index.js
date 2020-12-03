@@ -28,6 +28,7 @@ async function run () {
     await page.click('input[name="joken"][value="2"]');
     await page.click('input[type="submit"][name="button"]');
 
+    // TODO: Change this deprecated method
     await page.waitFor(5000);
 
     const list = await page.evaluate(() => {
