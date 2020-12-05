@@ -45,6 +45,7 @@ async function run () {
         }
         return data;
     })
+    // TODO: Change for API calls
     console.log(list);
 
     //await page.screenshot({path: 'screenshot.png'});
