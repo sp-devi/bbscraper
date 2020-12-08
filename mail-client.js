@@ -43,3 +43,5 @@ const sendEmail = (to, subject, message, from) => {
         }
     })
 }
+
+module.exports = { sendEmail };
