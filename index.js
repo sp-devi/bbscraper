@@ -52,3 +52,9 @@ async function run () {
     browser.close();
 }
 run();
+
+function processContentForSending(oldData, newData) {
+    if (oldData.size != newData.size) {
+        
+    }
+}
