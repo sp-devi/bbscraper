@@ -31,7 +31,7 @@ const sendEmail = (to, subject, message, from) => {
                 Data: subject
             }
         },
-        ReturnPath: from ? from : config.aws.sets.from.defaul,
+        ReturnPath: from ? from : config.aws.ses.from.defaul,
         Source: from ? from : config.aws.ses.from.defaul
     };
 
