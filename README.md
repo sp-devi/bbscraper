@@ -1,5 +1,5 @@
 # bbscraper
-
+# Function
 old = {
   'name': 'Nagoya city',
   'link': 'http://google.com/,
