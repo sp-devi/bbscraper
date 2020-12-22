@@ -14,4 +14,9 @@ new = {
   'schedule': '15:30 - 17:30'
 }
 
-old vs new has changes
+Create a function that checks the difference between the above objects.
+
+func isDefferentSchedule(old, new) {
+  old vs new has changes, return true
+}
+
