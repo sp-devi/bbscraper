@@ -54,9 +54,6 @@ async function run () {
 run();
 
 function processContentForSending(oldData, newData) {
-    if (oldData.size != newData.size) {
-
-    }
     // Name comparator
     // Date comparator
     // Schedule comparator
