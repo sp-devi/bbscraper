@@ -46,4 +46,7 @@ RUN npm i puppeteer
 
 COPY ./index.js .
 
+# Put here for now... Should create external docker image for this.
+COPY ./mailer/server.js .
+
 ENTRYPOINT ["node", "/app/index.js"]
