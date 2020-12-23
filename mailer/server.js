@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 
 // Change to appropriate Endpoint API
 app.get('/', (req, res) => {
+    // TODO email should be passed as a request parameter
     mailClient.sendEmail("apldante@gmail.com", req.title, req.body);
     res.send('Email is sent');
 });
