@@ -54,18 +54,16 @@ async function run () {
 run();
 
 function processContentForSending(oldData, newData) {
-  let isSame = true;
-  const oldDataSize = Object.keys(oldData).length;
-  const newDataSize = Object.keys(newData).length;
-  if (oldDataSize !== newDataSize) {
-    return false;
-  }
-  //comparis of items starts here
-  Object.keys(oldData).forEach(function(key) {
-    if (newData[key] === undefined
-        || newData[key] !== oldData[key]){
-      isSame  = false;
-    }
-  });
-  return isSame;
+  //Function for checking the JSON data's changes
+  const hasNoChange = checkDataChanges(oldData, newData);
+}
+
+//Old and New JSONData change check
+function checkDataChanges(oldData, newData){
+  return Object.keys(oldObj).every(function(key) {
+        if (newObj[key] !== undefined
+              && newObj[key] === oldObj[key]){
+                return true;
+          }
+        });
 }
