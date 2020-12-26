@@ -54,8 +54,18 @@ async function run () {
 run();
 
 function processContentForSending(oldData, newData) {
-    // Name comparator
-    // Date comparator
-    // Schedule comparator
-
+  let isSame = true;
+  const oldDataSize = Object.keys(oldData).length;
+  const newDataSize = Object.keys(newData).length;
+  if (oldDataSize !== newDataSize) {
+    return false;
+  }
+  //comparis of items starts here
+  Object.keys(oldData).forEach(function(key) {
+    if (newData[key] === undefined
+        || newData[key] !== oldData[key]){
+      isSame  = false;
+    }
+  });
+  return isSame;
 }
