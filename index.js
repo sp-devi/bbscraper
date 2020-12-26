@@ -60,9 +60,9 @@ function processContentForSending(oldData, newData) {
 
 //Old and New JSONData change check
 function checkDataChanges(oldData, newData){
-  return Object.keys(oldObj).every(function(key) {
-        if (newObj[key] !== undefined
-              && newObj[key] === oldObj[key]){
+  return Object.keys(oldData).every(function(key) {
+        if (newData[key] !== undefined
+              && newData[key] === oldData[key]){
                 return true;
           }
         });
