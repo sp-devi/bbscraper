@@ -54,8 +54,16 @@ async function run () {
 run();
 
 function processContentForSending(oldData, newData) {
-    // Name comparator
-    // Date comparator
-    // Schedule comparator
+  //Function for checking the JSON data's changes
+  const hasNoChange = checkDataChanges(oldData, newData);
+}
 
+//Old and New JSONData change check
+function checkDataChanges(oldData, newData){
+  return Object.keys(oldData).every(function(key) {
+        if (newData[key] !== undefined
+              && newData[key] === oldData[key]){
+                return true;
+          }
+        });
 }
