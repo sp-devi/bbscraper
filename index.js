@@ -1,13 +1,13 @@
 const puppeteer = require('puppeteer');
 const url = 'https://www.net.city.nagoya.jp/cgi-bin/sp04001';
 
-async function run () {
+async function run() {
     const browser = await puppeteer.launch({
         args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox'
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
         ]
-      });
+    });
     const page = await browser.newPage();
     await page.goto(url);
 
@@ -54,16 +54,16 @@ async function run () {
 run();
 
 function processContentForSending(oldData, newData) {
-  //Function for checking the JSON data's changes
-  const hasNoChange = checkDataChanges(oldData, newData);
+    //Function for checking the JSON data's changes
+    const hasNoChange = checkDataChanges(oldData, newData);
 }
 
 //Old and New JSONData change check
-function checkDataChanges(oldData, newData){
-  return Object.keys(oldData).every(function(key) {
+function checkDataChanges(oldData, newData) {
+    return Object.keys(oldData).every(function (key) {
         if (newData[key] !== undefined
-              && newData[key] === oldData[key]){
-                return true;
-          }
-        });
+            && newData[key] === oldData[key]) {
+            return true;
+        }
+    });
 }
