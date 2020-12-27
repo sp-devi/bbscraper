@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 // For Email sending
 const EMAIL = "apd@gmail.com"
 
-
 AWS.config.update({
     accessKeyId: config.aws.key,
     secretAccessKey: config.aws.secret,
