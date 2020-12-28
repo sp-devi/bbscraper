@@ -10,7 +10,8 @@ AWS.config.update({
 });
 
 const ses = new AWS.SES({
-    apiVerson: '2010-12-01'
+    apiVerson: '2010-12-01',
+    tag: 'single-mail'
 });
 
 const sendEmail = (to, subject, message, from) => {
