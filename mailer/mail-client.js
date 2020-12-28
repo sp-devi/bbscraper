@@ -12,8 +12,7 @@ AWS.config.update({
 });
 
 const ses = new AWS.SES({
-    apiVerson: '2010-12-01',
-    tag: 'single-mail'
+    apiVerson: '2010-12-01'
 });
 
 const sendEmail = (to, subject, message, from) => {
@@ -34,7 +33,8 @@ const sendEmail = (to, subject, message, from) => {
             }
         },
         ReturnPath: from ? from : config.aws.ses.from.defaul,
-        Source: from ? from : config.aws.ses.from.defaul
+        Source: from ? from : config.aws.ses.from.defaul,
+        tag: 'single-mail'
     };
 
     ses.sendEmail(params, (err, data) => {
