@@ -1,3 +1,4 @@
 package-lock.json
 /node_modules
 screenshot.png
+/mailer/config.js
