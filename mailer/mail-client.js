@@ -1,8 +1,5 @@
 const AWS = require('aws-sdk');
 
-// For Email sending
-const EMAIL = "apd@gmail.com"
-
 const config = require('./config');
 
 AWS.config.update({
