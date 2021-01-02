@@ -3,7 +3,7 @@ const express = require('express');
 
 app = express();
 
-cron.schedule(' Checking for schedules', () => {
+cron.schedule('* * * * *', () => {
     console.log('Running a task every 10 minutes');
 })
 
