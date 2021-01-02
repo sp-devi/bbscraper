@@ -6,7 +6,7 @@ const mailClient = require('./mail-client');
 
 app.use(bodyParser.urlencoded({
     extended: false
-}))
+}));
 app.use(bodyParser.json());
 
 // Change to appropriate Endpoint API
