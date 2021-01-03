@@ -51,7 +51,6 @@ async function run() {
     //await page.screenshot({path: 'screenshot.png'});
     browser.close();
 }
-run();
 
 //TODO follow future project
 function processContentForSending(oldData, newData) {
@@ -68,3 +67,5 @@ function checkDataChanges(oldData, newData) {
         }
     });
 }
+
+module.exports.scrape = run;
