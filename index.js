@@ -53,6 +53,7 @@ async function run() {
 }
 run();
 
+//TODO follow future project
 function processContentForSending(oldData, newData) {
     //Function for checking the JSON data's changes
     const hasNoChange = checkDataChanges(oldData, newData);
