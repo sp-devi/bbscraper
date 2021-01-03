@@ -8,6 +8,6 @@ app.get('/bbscraper', (req, res) => {
     scraper.scrape();
 });
 
-app.listen(3000, () => {
+app.listen(3010, () => {
     console.log('App is listening on port 3000');
 })
