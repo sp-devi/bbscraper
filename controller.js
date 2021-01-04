@@ -9,5 +9,5 @@ app.get('/bbscraper', (req, res) => {
 });
 
 app.listen(3010, () => {
-    console.log('App is listening on port 3000');
+    console.log('App is listening on port 3010');
 })
