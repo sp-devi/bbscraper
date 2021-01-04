@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const url = 'https://www.net.city.nagoya.jp/cgi-bin/sp04001';
+const mailClientRequest = require('request')
 
 async function run() {
     const browser = await puppeteer.launch({
@@ -43,6 +44,8 @@ async function run() {
                 'schedule': schedule.innerText
             });
         }
+        // Process result
+        processContentForSending({}, data);
         return data;
     })
     // TODO: Change for API calls
@@ -56,6 +59,12 @@ async function run() {
 function processContentForSending(oldData, newData) {
     //Function for checking the JSON data's changes
     const hasNoChange = checkDataChanges(oldData, newData);
+
+    request('http://localhost:3020/sendMail', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body)
+        }
+    })
 }
 
 //Old and New JSONData change check
