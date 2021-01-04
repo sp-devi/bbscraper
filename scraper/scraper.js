@@ -60,6 +60,11 @@ function processContentForSending(oldData, newData) {
     //Function for checking the JSON data's changes
     const hasNoChange = checkDataChanges(oldData, newData);
 
+    // Mail main content
+    body = {
+        mailData : newData
+    }
+
     request('http://localhost:3020/sendMail', function (error, response, body) {
         if (!error && response.statusCode == 200) {
             console.log(body)
