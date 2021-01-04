@@ -10,12 +10,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // Change to appropriate Endpoint API
-app.get('/', (req, res) => {
+app.get('/sendMail', (req, res) => {
     // TODO email should be passed as a request parameter
     mailClient.sendEmail("apldante@gmail.com", req.title, req.body);
     res.send('Email is sent');
 });
 
-app.listen(3000, () => {
-    console.log('App is listening on port 3000');
+app.listen(3020, () => {
+    console.log('App is listening on port 3020');
 })
