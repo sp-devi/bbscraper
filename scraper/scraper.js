@@ -1,12 +1,12 @@
 const puppeteer = require('puppeteer');
 const url = 'https://www.net.city.nagoya.jp/cgi-bin/sp04001';
-const mailClientRequest = require('request')
+const mailClientRequest = require('request');
 
 async function run() {
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
-            '--disable-setuid-sandbox'
+            '--disable-setuid-sandbox',
         ]
     });
     const page = await browser.newPage();
@@ -41,7 +41,7 @@ async function run() {
                 'name': a.innerText,
                 'link': a.querySelector('a').href,
                 'date': a.nextElementSibling.innerText,
-                'schedule': schedule.innerText
+                'schedule': schedule.innerText,
             });
         }
         // Process result
@@ -62,14 +62,14 @@ function processContentForSending(oldData, newData) {
 
     // Mail main content
     body = {
-        mailData : newData
-    }
+        mailData : newData,
+    };
 
     request('http://localhost:3020/sendMail', function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body)
+            console.log(body);
         }
-    })
+    });
 }
 
 //Old and New JSONData change check
