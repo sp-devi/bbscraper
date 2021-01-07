@@ -56,9 +56,9 @@ async function run() {
 }
 
 //TODO follow future project
-function processContentForSending(data) {
+function processContentForSending(currentScrapedData) {
 
-    if (hasNoChangesBetween(readData(), data)) {
+    if (hasNoChangesBetween(readData(), currentScrapedData)) {
         return;
     }
 
@@ -74,7 +74,7 @@ function processContentForSending(data) {
     });
 
     // output data
-    writeData(data);
+    writeData(currentScrapedData);
 
 }
 
