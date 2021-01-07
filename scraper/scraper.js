@@ -99,8 +99,8 @@ function outputDataText(stringData){
 }
 
 function writeData(data) {
-    // output at ./output/output.txt
-    return {};
+    // output at ./output/output.txt and return true for succesful write
+    return true;
 }
 
 function readData() {
