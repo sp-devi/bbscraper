@@ -45,7 +45,7 @@ async function run() {
             });
         }
         // Process result
-        processContentForSending({}, data);
+        processContentForSending(data);
         return data;
     })
     // TODO: Change for API calls
@@ -56,13 +56,15 @@ async function run() {
 }
 
 //TODO follow future project
-function processContentForSending(oldData, newData) {
-    //Function for checking the JSON data's changes
-    const hasNoChange = checkDataChanges(oldData, newData);
+function processContentForSending(data) {
+
+    if (hasNoChangesBetween(readData(), data)) {
+        return;
+    }
 
     // Mail main content
     body = {
-        mailData : newData,
+        mailData : data,
     };
 
     request('http://localhost:3020/sendMail', function (error, response, body) {
@@ -70,10 +72,14 @@ function processContentForSending(oldData, newData) {
             console.log(body);
         }
     });
+
+    // output data
+    writeData(data);
+
 }
 
 //Old and New JSONData change check
-function checkDataChanges(oldData, newData) {
+function hasNoChangesBetween(oldData, newData) {
     return Object.keys(oldData).every(function (key) {
         if (newData[key] !== undefined
             && newData[key] === oldData[key]) {
@@ -90,6 +96,16 @@ function outputDataText(stringData){
   fetchData.download = 'latestData.txt';
   //for auto download
   fetchData.click();
+}
+
+function writeData(data) {
+    // output at ./output/output.txt
+    return {};
+}
+
+function readData() {
+    // reat ./output/output.txt
+    return {};
 }
 
 module.exports.scrape = run;
