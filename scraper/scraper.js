@@ -82,4 +82,14 @@ function checkDataChanges(oldData, newData) {
     });
 }
 
+//ouput the stringdata as text file
+//and download it automatically
+function outputDataText(stringData){
+  let fetchData = document.createElement('a');
+  fetchData.href = "data:application/octet-stream," + encodeURIComponent(stringData);
+  fetchData.download = 'latestData.txt';
+  //for auto download
+  fetchData.click();
+}
+
 module.exports.scrape = run;
