@@ -10,9 +10,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // Change to appropriate Endpoint API
-app.get('/sendMail', (req, res) => {
+app.post('/sendMail', (req, res) => {
     // TODO email should be passed as a request parameter
-    mailClient.sendEmail("apldante@gmail.com", "Hello", "This is body");
+    mailClient.sendEmail("apldante@gmail.com", "AWS TESTING", "This is body");
     res.send('Email is sent');
 });
 
