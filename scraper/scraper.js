@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const url = 'https://www.net.city.nagoya.jp/cgi-bin/sp04001';
+const sendMailApi = 'http://localhost:3020/sendMail';
 const mailClientRequest = require('request');
 
 async function run() {
@@ -62,20 +63,23 @@ function processContentForSending(currentScrapedData) {
         return;
     }
 
-    // Mail main content
-    body = {
-        mailData : data,
-    };
-
-    request('http://localhost:3020/sendMail', function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body);
-        }
-    });
+    sendMailRequest(currentScrapedData);
 
     // output data
     writeData(currentScrapedData);
 
+}
+
+function sendMailRequest(mailData) {
+    mailClientRequest({
+        url: sendMailApi,
+        method: 'POST',
+        json: mailData
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body);
+        }
+    });
 }
 
 //Old and New JSONData change check
@@ -90,12 +94,12 @@ function hasNoChangesBetween(oldData, newData) {
 
 //ouput the stringdata as text file
 //and download it automatically
-function outputDataText(stringData){
-  let fetchData = document.createElement('a');
-  fetchData.href = "data:application/octet-stream," + encodeURIComponent(stringData);
-  fetchData.download = 'latestData.txt';
-  //for auto download
-  fetchData.click();
+function outputDataText(stringData) {
+    let fetchData = document.createElement('a');
+    fetchData.href = "data:application/octet-stream," + encodeURIComponent(stringData);
+    fetchData.download = 'latestData.txt';
+    //for auto download
+    fetchData.click();
 }
 
 function writeData(data) {
