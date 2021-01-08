@@ -15,7 +15,7 @@ const ses = new AWS.SES({
 const sendEmail = (to, subject, message, from) => {
     const params = {
         Destination: {
-            ToAddress: [to]
+            ToAddresses: [to]
         },
         Message: {
             Body: {
@@ -31,14 +31,13 @@ const sendEmail = (to, subject, message, from) => {
         },
         ReturnPath: from ? from : config.aws.ses.from.default,
         Source: from ? from : config.aws.ses.from.default,
-        tag: 'single-mail'
     };
 
     ses.sendEmail(params, (err, data) => {
         if (err) {
             return console.log(err, err.stack);
         } else {
-            console.log("Email send : ", data);
+            console.log("Email sent : ", data);
         }
     })
 }
