@@ -104,7 +104,7 @@ function writeData(data) {
 }
 
 function readData() {
-    // reat ./output/output.txt
+    // read ./output/output.txt
     return {};
 }
 
