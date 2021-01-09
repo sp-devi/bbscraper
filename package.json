@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./scraper/scraper.js",
+    "start": "node ./cron-job/cron.js",
     "sendMail": "node ./mailer/server.js"
   },
   "keywords": [],
