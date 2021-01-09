@@ -79,12 +79,15 @@ function hasNoChangesBetween(oldData, newData) {
     });
 }
 
+//chech if there changes between two data
+//MY Commnet: this is quite dangerous because it will check even spaces
 function hasChangesBetween(oldData, newData) {
     console.log(oldData);
     console.log(JSON.stringify(newData));
     return oldData !== JSON.stringify(newData)
 }
 
+//write data for output
 function writeData(data) {
     fs.writeFile('./output/output.txt', JSON.stringify(data), (err) => {
         if (err) {
@@ -95,7 +98,7 @@ function writeData(data) {
 
     return true;
 }
-
+//read  callback data
 function readData(callback) {
     fs.readFile('./output/output.txt', (err, data) => {
         if (err) {
@@ -105,6 +108,7 @@ function readData(callback) {
     });
 }
 
+//create mail for sending data
 function createSendMailData(scheduleData) {
     const toAddress = config.mail.to;
     const subject = config.mail.subject;
