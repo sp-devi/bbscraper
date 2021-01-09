@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
-const url = 'https://www.net.city.nagoya.jp/cgi-bin/sp04001';
-const sendMailApi = 'http://localhost:3020/sendMail';
-const mailClientRequest = require('request');
+const mailClient = require('../mailer/mail-client');
+const config = require('./config');
+const fs = require('fs');
+const { callbackify } = require('util');
 
 async function run() {
     const browser = await puppeteer.launch({
@@ -11,7 +12,7 @@ async function run() {
         ]
     });
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(config.url.target);
 
     // current date
     let nodeDate = new Date();
@@ -27,7 +28,7 @@ async function run() {
     await page.select('select[name="kyoyo1"]', '07');
     await page.select('select[name="kyoyo2"]', '07');
     await page.select('select[name="chiiki"]', '20');
-    await page.click('input[name="joken"][value="2"]');
+    await page.click('input[name="joken"][value="1"]');
     await page.click('input[type="submit"][name="button"]');
 
     // TODO: Change this deprecated method
@@ -46,38 +47,24 @@ async function run() {
             });
         }
         // Process result
-        processContentForSending(data);
         return data;
-    })
+    }).then(value => {
+        console.log(value);
+        processContentForSending(value);
+    });
     // TODO: Change for API calls
     console.log(list);
 
-    //await page.screenshot({path: 'screenshot.png'});
+    // await page.screenshot({ path: 'screenshot.png' });
     browser.close();
 }
 
 //TODO follow future project
 function processContentForSending(currentScrapedData) {
-
-    if (hasNoChangesBetween(readData(), currentScrapedData)) {
-        return;
-    }
-
-    sendMailRequest(currentScrapedData);
-
-    // output data
-    writeData(currentScrapedData);
-
-}
-
-function sendMailRequest(mailData) {
-    mailClientRequest({
-        url: sendMailApi,
-        method: 'POST',
-        json: mailData
-    }, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body);
+    readData(function(data) {
+        if (hasChangesBetween(data, currentScrapedData)) {
+            mailClient.sendEmail(createSendMailData(currentScrapedData));
+            writeData(currentScrapedData);
         }
     });
 }
@@ -92,24 +79,51 @@ function hasNoChangesBetween(oldData, newData) {
     });
 }
 
-//ouput the stringdata as text file
-//and download it automatically
-function outputDataText(stringData) {
-    let fetchData = document.createElement('a');
-    fetchData.href = "data:application/octet-stream," + encodeURIComponent(stringData);
-    fetchData.download = 'latestData.txt';
-    //for auto download
-    fetchData.click();
+function hasChangesBetween(oldData, newData) {
+    console.log(oldData);
+    console.log(JSON.stringify(newData));
+    return oldData !== JSON.stringify(newData)
 }
 
 function writeData(data) {
-    // output at ./output/output.txt and return true for succesful write
+    fs.writeFile('./output/output.txt', JSON.stringify(data), (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("Data has been written to file successfully.");
+    });
+
     return true;
 }
 
-function readData() {
-    // read ./output/output.txt
-    return {};
+function readData(callback) {
+    fs.readFile('./output/output.txt', (err, data) => {
+        if (err) {
+            throw err;
+        }
+        callback(data.toString());
+    });
+}
+
+function createSendMailData(scheduleData) {
+    const toAddress = config.mail.to;
+    const subject = config.mail.subject;
+
+    let body = `Found new schedule(s): <br>`;
+
+    scheduleData.forEach((element, index) => {
+        body += ` No : ${index + 1} <br>`;
+        body += ` Name : ${element.name} <br>`;
+        body += ` Link : ${element.link} <br>`;
+        body += ` Date : ${element.date} <br>`;
+        body += ` Time : ${element.schedule} <br><br>`;
+    });
+
+    return {
+        to: toAddress,
+        subject: subject,
+        message: body
+    };
 }
 
 module.exports.scrape = run;

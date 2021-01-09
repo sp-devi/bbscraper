@@ -12,25 +12,26 @@ const ses = new AWS.SES({
     apiVerson: '2010-12-01'
 });
 
-const sendEmail = (to, subject, message, from) => {
+// to, subject, message, from
+const sendEmail = (mailData) => {
     const params = {
         Destination: {
-            ToAddresses: [to]
+            ToAddresses: [mailData.to]
         },
         Message: {
             Body: {
                 Html: {
                     Charset: 'UTF-8',
-                    Data: message
+                    Data: mailData.message
                 }
             },
             Subject: {
                 Charset: 'UTF-8',
-                Data: subject
+                Data: mailData.subject
             }
         },
-        ReturnPath: from ? from : config.aws.ses.from.default,
-        Source: from ? from : config.aws.ses.from.default,
+        ReturnPath: mailData.from ? mailData.from : config.aws.ses.from.default,
+        Source: mailData.from ? mailData.from : config.aws.ses.from.default
     };
 
     ses.sendEmail(params, (err, data) => {
