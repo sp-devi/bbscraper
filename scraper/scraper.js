@@ -2,17 +2,11 @@ const puppeteer = require('puppeteer');
 const mailClient = require('../mailer/mail-client');
 const config = require('./config');
 const fs = require('fs');
-const { callbackify } = require('util');
+
 
 async function run() {
-    const browser = await puppeteer.launch({
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-        ]
-    });
-    const page = await browser.newPage();
-    await page.goto(config.url.target);
+
+    console.log('Starting puppeteer...');
 
     // current date
     let nodeDate = new Date();
@@ -20,88 +14,110 @@ async function run() {
     let date = ("0" + nodeDate.getDate()).slice(-2);
     // current month
     let month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
+    // last date of the month
+    let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
 
-    // Select boxes
-    await page.select('select[name="syumoku"]', '023');
-    await page.select('select[name="month"]', month);
-    await page.select('select[name="day"]', date);
-    await page.select('select[name="kyoyo1"]', '07');
-    await page.select('select[name="kyoyo2"]', '07');
-    await page.select('select[name="chiiki"]', '20');
-    await page.click('input[name="joken"][value="1"]');
-    await page.click('input[type="submit"][name="button"]');
+    for (let i = nodeDate.getDate(); i <= 10; i++) {
 
-    // TODO: Change this deprecated method
-    await page.waitFor(5000);
+        const browser = await puppeteer.launch({
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+            ]
+        });
 
-    const list = await page.evaluate(() => {
-        let data = [];
-        const list = document.querySelectorAll('.RESOUTPUT2');
-        for (const a of list) {
-            var schedule = a.nextElementSibling.nextElementSibling;
-            data.push({
-                'name': a.innerText,
-                'link': a.querySelector('a').href,
-                'date': a.nextElementSibling.innerText,
-                'schedule': schedule.innerText,
+        console.log('Opening browser...');
+
+        const page = await browser.newPage();
+        // await page.goto(config.url.target);
+        await page.goto('https://www.net.city.nagoya.jp/cgi-bin/sp04001',
+            {
+                waitUntil: 'load',
+                timeout: 0
             });
-        }
-        // Process result
-        return data;
-    }).then(value => {
-        console.log(value);
-        processContentForSending(value);
-    });
-    // TODO: Change for API calls
-    console.log(list);
 
-    // await page.screenshot({ path: 'screenshot.png' });
-    browser.close();
+        console.log('Browser opened.');
+
+        // Select boxes
+        await page.select('select[name="syumoku"]', '023');
+        await page.select('select[name="month"]', month);
+        await page.select('select[name="day"]', ('0' + i).slice(-2));
+        await page.select('select[name="kyoyo1"]', '07');
+        await page.select('select[name="kyoyo2"]', '07');
+        await page.select('select[name="chiiki"]', '20');
+        await page.click('input[name="joken"][value="1"]');
+        await page.click('input[type="submit"][name="button"]');
+
+        console.log('Starting loop through date');
+
+        // TODO: Change this deprecated method
+        await page.waitFor(7000);
+
+        console.log('Starting evaluate');
+
+        const list = await page.evaluate(() => {
+            let data = [];
+            const list = document.querySelectorAll('.RESOUTPUT2');
+            for (const a of list) {
+                var schedule = a.nextElementSibling.nextElementSibling;
+                data.push({
+                    'name': a.innerText,
+                    'link': a.querySelector('a').href,
+                    'date': a.nextElementSibling.innerText,
+                    'schedule': schedule.innerText,
+                });
+            }
+            console.log("Processing at day : ");
+            // Process result
+            return data;
+        }).then(value => {
+            if (value.length != 0) {
+                let dayAsKey = 'day' + i;
+                let dateValueMap = {};
+                dateValueMap[dayAsKey] = value;
+                processContentForSending(dayAsKey, dateValueMap);
+                listData.push(dateValueMap);
+            }
+            // await page.screenshot({ path: 'screenshot.png' });
+            browser.close();
+        });
+    }
 }
 
 //TODO follow future project
-function processContentForSending(currentScrapedData) {
-    readData(function(data) {
+function processContentForSending(dayAsKey, currentScrapedData) {
+    readData(dayAsKey, function (data) {
         if (hasChangesBetween(data, currentScrapedData)) {
-            mailClient.sendEmail(createSendMailData(currentScrapedData));
-            writeData(currentScrapedData);
-        }
-    });
-}
 
-//Old and New JSONData change check
-function hasNoChangesBetween(oldData, newData) {
-    return Object.keys(oldData).every(function (key) {
-        if (newData[key] !== undefined
-            && newData[key] === oldData[key]) {
-            return true;
+            console.log('Has changes for ' + dayAsKey);
+
+            mailClient.sendEmail(createSendMailData(currentScrapedData));
+            writeData(dayAsKey, currentScrapedData);
         }
     });
 }
 
 function hasChangesBetween(oldData, newData) {
-    console.log(oldData);
-    console.log(JSON.stringify(newData));
     return oldData !== JSON.stringify(newData)
 }
 
-function writeData(data) {
-    fs.writeFile('./output/output.txt', JSON.stringify(data), (err) => {
+function writeData(dayAsKey, data) {
+    let outputFileName = dayAsKey + '.txt';
+    fs.writeFile('./output/' + outputFileName, JSON.stringify(data), 'utf8', (err) => {
         if (err) {
             throw err;
         }
         console.log("Data has been written to file successfully.");
     });
-
-    return true;
 }
 
-function readData(callback) {
-    fs.readFile('./output/output.txt', (err, data) => {
+function readData(dayAsKey, toRead) {
+    fs.readFile('./output/' + dayAsKey + '.txt', (err, data) => {
         if (err) {
-            throw err;
+            toRead({});
+        } else {
+            toRead(data.toString());
         }
-        callback(data.toString());
     });
 }
 
