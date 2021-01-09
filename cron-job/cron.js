@@ -8,12 +8,11 @@ const cronJob = {
 };
 
 function start() {
-    scraper.scrape();
-    // cron.schedule('0 */1 8-23 * * *', () => {
-    //     const date = new Date();
-    //     console.log("Running at : " + date.getHours() + "/ " + date.getMinutes());
-    //     scraper.scrape();
-    // });
+    cron.schedule('0 */6 8-23 * * *', () => {
+        const date = new Date();
+        console.log("Running at : " + date.getHours() + ":" + date.getMinutes());
+        scraper.scrape();
+    });
 }
 
 function end() {

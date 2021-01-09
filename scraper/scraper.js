@@ -3,10 +3,11 @@ const mailClient = require('../mailer/mail-client');
 const config = require('./config');
 const fs = require('fs');
 
-
 async function run() {
 
     console.log('Starting puppeteer...');
+
+    const listData = [];
 
     // current date
     let nodeDate = new Date();
@@ -16,8 +17,8 @@ async function run() {
     let month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
     // last date of the month
     let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
-
-    for (let i = nodeDate.getDate(); i <= 10; i++) {
+        // nodeDate.getDate() + 4
+    for (let i = 13; i <= 13; i++) {
 
         const browser = await puppeteer.launch({
             args: [
@@ -30,11 +31,7 @@ async function run() {
 
         const page = await browser.newPage();
         // await page.goto(config.url.target);
-        await page.goto('https://www.net.city.nagoya.jp/cgi-bin/sp04001',
-            {
-                waitUntil: 'load',
-                timeout: 0
-            });
+        await page.goto('https://www.net.city.nagoya.jp/cgi-bin/sp04001');
 
         console.log('Browser opened.');
 
@@ -51,13 +48,16 @@ async function run() {
         console.log('Starting loop through date');
 
         // TODO: Change this deprecated method
-        await page.waitFor(7000);
+        await page.waitFor(3000);
 
-        console.log('Starting evaluate');
+        console.log('Start evaluate...');
 
-        const list = await page.evaluate(() => {
+        await page.evaluate(() => {
             let data = [];
             const list = document.querySelectorAll('.RESOUTPUT2');
+
+            console.log('Evaluating...');
+
             for (const a of list) {
                 var schedule = a.nextElementSibling.nextElementSibling;
                 data.push({
@@ -75,11 +75,16 @@ async function run() {
                 let dayAsKey = 'day' + i;
                 let dateValueMap = {};
                 dateValueMap[dayAsKey] = value;
-                processContentForSending(dayAsKey, dateValueMap);
+                processContentForSending(dayAsKey, value);
                 listData.push(dateValueMap);
             }
             // await page.screenshot({ path: 'screenshot.png' });
+        }).catch((err) => {
+            console.log(err);
+        }).finally(() => {
             browser.close();
+            console.log('Browser closing...')
+            console.log("Finished");
         });
     }
 }
