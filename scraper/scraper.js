@@ -31,9 +31,9 @@ async function run() {
 
         const page = await browser.newPage();
         // await page.goto(config.url.target);
-        await page.goto('https://www.net.city.nagoya.jp/cgi-bin/sp04001');
+        await page.goto(config.url.target);
 
-        console.log('Browser opened.');
+        console.log('Browser opened...');
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
@@ -45,7 +45,7 @@ async function run() {
         await page.click('input[name="joken"][value="1"]');
         await page.click('input[type="submit"][name="button"]');
 
-        console.log('Starting loop through date');
+        console.log('Starting loop through date...');
 
         // TODO: Change this deprecated method
         await page.waitFor(3000);
@@ -67,7 +67,7 @@ async function run() {
                     'schedule': schedule.innerText,
                 });
             }
-            console.log("Processing at day : ");
+            console.log("Processing at day : " + i);
             // Process result
             return data;
         }).then(value => {

@@ -1,5 +1,4 @@
 const cron = require('node-cron');
-const request = require('request');
 const scraper = require('../scraper/scraper');
 
 const cronJob = {
@@ -16,7 +15,7 @@ function start() {
 }
 
 function end() {
-    // write end task function here
+    // write end task function hereg
 }
 
 module.exports.cronJob = cronJob;
