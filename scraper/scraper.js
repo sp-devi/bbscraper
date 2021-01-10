@@ -12,12 +12,12 @@ async function run() {
     // current date
     let nodeDate = new Date();
     // adjust 0 before single digit date
-    let startDate = ("0" + nodeDate.getDate());
+    let startDate = nodeDate.getDate();
     // current month
     let month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
     // last date of the month
     let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
-        // nodeDate.getDate() + 4
+    // nodeDate.getDate() + 4
     for (let i = startDate; i <= lastDate; i++) {
 
         const browser = await puppeteer.launch({
@@ -38,7 +38,7 @@ async function run() {
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
         await page.select('select[name="month"]', month);
-        await page.select('select[name="day"]', startDate.slice(-2));
+        await page.select('select[name="day"]', ('0' + i).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
@@ -72,7 +72,7 @@ async function run() {
             return data;
         }).then(value => {
             if (value.length != 0) {
-                let dayAsKey = 'day' + i;
+                const dayAsKey = 'day' + i;
                 let dateValueMap = {};
                 dateValueMap[dayAsKey] = value;
                 processContentForSending(dayAsKey, value);
