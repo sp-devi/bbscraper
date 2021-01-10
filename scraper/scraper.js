@@ -70,12 +70,12 @@ async function run() {
             console.log("Processing at day : " + i);
             // Process result
             return data;
-        }).then(value => {
-            if (value.length != 0) {
+        }).then(valueData => {
+            if (valueData.length != 0) {
                 const dayAsKey = 'day' + i;
                 let dateValueMap = {};
-                dateValueMap[dayAsKey] = value;
-                processContentForSending(dayAsKey, value);
+                dateValueMap[dayAsKey] = valueData;
+                processContentForSending(dayAsKey, valueData);
                 listData.push(dateValueMap);
             }
             // await page.screenshot({ path: 'screenshot.png' });
