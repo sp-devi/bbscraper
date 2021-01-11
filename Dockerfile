@@ -44,6 +44,6 @@ RUN apt-get update \
 WORKDIR /app
 RUN npm i puppeteer
 
-COPY ./index.js .
+COPY . .
 
 ENTRYPOINT ["node", "/app/index.js"]
