@@ -18,16 +18,16 @@ async function run() {
     // last date of the month
     let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
 
+    const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
+
     for (let i = startDate; i <= lastDate; i++) {
 
         console.log('Opening browser...');
-
-        const browser = await puppeteer.launch({
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ]
-        });
 
         const page = await browser.newPage();
         // await page.goto(config.url.target);
