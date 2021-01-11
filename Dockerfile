@@ -42,6 +42,7 @@ RUN apt-get update \
       wget
 
 WORKDIR /app
+
 RUN npm i puppeteer
 
 COPY . .
