@@ -18,20 +18,24 @@ async function run() {
     // last date of the month
     let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
     // nodeDate.getDate() + 4
-    for (let i = startDate; i <= lastDate; i++) {
+    const browser = await puppeteer.launch({
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
 
-        const browser = await puppeteer.launch({
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ]
-        });
+    for (let i = startDate; i <= lastDate; i++) {
 
         console.log('Opening browser...');
 
         const page = await browser.newPage();
         // await page.goto(config.url.target);
-        await page.goto(config.url.target);
+        await page.goto(config.url.target,
+            {
+                waitUntil: 'load',
+                timeout: 0
+            });
 
         console.log('Browser opened...');
 
@@ -41,14 +45,14 @@ async function run() {
         await page.select('select[name="day"]', ('0' + i).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
-        await page.select('select[name="chiiki"]', '20');
+        await page.select('select[name="chiiki"]', '20'); 1
         await page.click('input[name="joken"][value="1"]');
         await page.click('input[type="submit"][name="button"]');
 
         console.log('Starting loop through date...');
 
         // TODO: Change this deprecated method
-        await page.waitFor(3000);
+        await page.waitFor(5000);
 
         console.log('Start evaluate...');
 
@@ -67,7 +71,7 @@ async function run() {
                     'schedule': schedule.innerText,
                 });
             }
-            console.log("Processing at day : " + i);
+            console.log("Processing...");
             // Process result
             return data;
         }).then(valueData => {
@@ -82,7 +86,7 @@ async function run() {
         }).catch((err) => {
             console.log(err);
         }).finally(() => {
-            browser.close();
+            // browser.close();
             console.log('Browser closing...')
             console.log("Finished");
         });
@@ -139,6 +143,8 @@ function createSendMailData(scheduleData) {
         body += ` Date : ${element.date} <br>`;
         body += ` Time : ${element.schedule} <br><br>`;
     });
+
+    body += body.toString();
 
     return {
         to: toAddress,

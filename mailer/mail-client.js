@@ -15,7 +15,7 @@ const ses = new AWS.SES({
 const sendEmail = (mailData) => {
     const params = {
         Destination: {
-            ToAddresses: [mailData.to]
+            ToAddresses: mailData.to
         },
         Message: {
             Body: {

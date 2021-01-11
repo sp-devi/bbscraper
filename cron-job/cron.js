@@ -7,7 +7,7 @@ const cronJob = {
 };
 
 function start() {
-    cron.schedule('0 */6 8-23 * * *', () => {
+    cron.schedule('0 */5 8-23 * * *', () => {
         const date = new Date();
         console.log("Running at : " + date.getHours() + ":" + date.getMinutes());
         scraper.scrape();
