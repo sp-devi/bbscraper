@@ -18,6 +18,8 @@ async function run() {
     // last date of the month
     let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
 
+    console.log('Opening browser...');
+
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
@@ -25,11 +27,10 @@ async function run() {
         ]
     });
 
+    const page = await browser.newPage();
+
     for (let i = startDate; i <= lastDate; i++) {
 
-        console.log('Opening browser...');
-
-        const page = await browser.newPage();
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
             {
@@ -86,11 +87,15 @@ async function run() {
         }).catch((err) => {
             console.log(err);
         }).finally(() => {
-            page.close();
-            console.log('Browser closing...')
+            // Browser needs to be closed for now.
+            // Because every time cron starts a new job, it opens up a new headless browser.
             console.log("Finished");
         });
     }
+
+    console.log('Browser closing...')
+    page.close();
+    browser.close();
 }
 
 //TODO follow future project
