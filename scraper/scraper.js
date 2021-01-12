@@ -3,6 +3,11 @@ const mailClient = require('../mailer/mail-client');
 const config = require('./config');
 const fs = require('fs');
 
+const SEARCHABLE_DAYS = {
+    SUN: 0,
+    SAT: 6,
+}
+
 async function run() {
 
     console.log('Starting puppeteer...');
@@ -27,9 +32,11 @@ async function run() {
         ]
     });
 
+    console.log('Browser opened...');
+
     const page = await browser.newPage();
 
-    for (let i = startDate; i <= lastDate; i++) {
+    for (let day = startDate; day <= lastDate; day++) {
 
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
@@ -38,12 +45,16 @@ async function run() {
                 timeout: 0
             });
 
-        console.log('Browser opened...');
+        let futureDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth(), day);
+
+        if (!isToBeSearch(futureDate)) {
+            continue;
+        }
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
         await page.select('select[name="month"]', month);
-        await page.select('select[name="day"]', ('0' + i).slice(-2));
+        await page.select('select[name="day"]', ('0' + futureDate.getDay()).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
@@ -83,13 +94,8 @@ async function run() {
                 processContentForSending(dayAsKey, valueData);
                 listData.push(dateValueMap);
             }
+
             // await page.screenshot({ path: 'screenshot.png' });
-        }).catch((err) => {
-            console.log(err);
-        }).finally(() => {
-            // Browser needs to be closed for now.
-            // Because every time cron starts a new job, it opens up a new headless browser.
-            console.log("Finished");
         });
     }
 
@@ -156,6 +162,16 @@ function createSendMailData(scheduleData) {
         subject: subject,
         message: body
     };
+}
+
+function isToBeSearch(futureDate) {
+    switch (futureDate.getDay()) {
+        case SEARCHABLE_DAYS.SUN:
+        case SEARCHABLE_DAYS.SAT:
+            return true;
+        default:
+            return false;
+    }
 }
 
 module.exports.scrape = run;
