@@ -12,7 +12,10 @@ function start() {
         const date = new Date();
         console.log("Running at : " + date.getHours() + ":" + date.getMinutes());
         scraper.scrape();
+    }, {
+        timezone: "Asia/Tokyo"
     });
+
 }
 
 function end() {
