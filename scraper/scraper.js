@@ -38,6 +38,12 @@ async function run() {
 
     for (let day = startDate; day <= lastDate; day++) {
 
+        let futureDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth(), day);
+
+        if (!isToBeSearch(futureDate)) {
+            continue;
+        }
+
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
             {
@@ -45,11 +51,6 @@ async function run() {
                 timeout: 0
             });
 
-        let futureDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth(), day);
-
-        if (!isToBeSearch(futureDate)) {
-            continue;
-        }
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
@@ -94,7 +95,6 @@ async function run() {
                 processContentForSending(dayAsKey, valueData);
                 listData.push(dateValueMap);
             }
-
             // await page.screenshot({ path: 'screenshot.png' });
         });
     }
