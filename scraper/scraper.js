@@ -37,12 +37,13 @@ async function run() {
     const page = await browser.newPage();
 
     for (let day = startDate; day <= lastDate; day++) {
-        let currentMonthOrNext = ("0" + (nodeDate.getMonth())).slice(-2);;
+
+        let currentMonthOrNext = nodeDate.getMonth();
 
         if (day < startDate) {
             // Proceed to next month
             console.log("Proceed search on next month");
-            currentMonthOrNext = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
+            currentMonthOrNext = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0);
         }
 
         let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
@@ -59,10 +60,9 @@ async function run() {
                 timeout: 0
             });
 
-
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', currentMonthOrNext);
+        await page.select('select[name="month"]', '0' + currentMonthOrNext.slice(-2));
         await page.select('select[name="day"]', ('0' + futureDate.getDay()).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
