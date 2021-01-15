@@ -51,6 +51,7 @@ async function run() {
 
         if (day < startDate) {
             // Proceed to next month
+            console.log("Proceed search on next month");
             currentMonthOrNext = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
         }
 
