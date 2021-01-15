@@ -36,11 +36,28 @@ async function run() {
 
     const page = await browser.newPage();
 
-    for (let day = startDate; day <= lastDate; day++) {
+    for (let day = 1; day <= lastDate; day++) {
+        if (day < startDate) {
+            // Proceed to next month
+            month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
+        } else {
+            // Continue with this month
+            month = ("0" + (nodeDate.getMonth())).slice(-2);
+        }
+    }
 
-        let futureDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth(), day);
+    for (let day = startDate; day <= lastDate; day++) {
+        let currentMonthOrNext = ("0" + (nodeDate.getMonth())).slice(-2);;
+
+        if (day < startDate) {
+            // Proceed to next month
+            currentMonthOrNext = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
+        }
+
+        let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
 
         if (!isToBeSearch(futureDate)) {
+            console.log("Skipping search...");
             continue;
         }
 
@@ -54,7 +71,7 @@ async function run() {
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', month);
+        await page.select('select[name="month"]', currentMonthOrNext);
         await page.select('select[name="day"]', ('0' + futureDate.getDay()).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
