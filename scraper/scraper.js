@@ -36,16 +36,6 @@ async function run() {
 
     const page = await browser.newPage();
 
-    for (let day = 1; day <= lastDate; day++) {
-        if (day < startDate) {
-            // Proceed to next month
-            month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
-        } else {
-            // Continue with this month
-            month = ("0" + (nodeDate.getMonth())).slice(-2);
-        }
-    }
-
     for (let day = startDate; day <= lastDate; day++) {
         let currentMonthOrNext = ("0" + (nodeDate.getMonth())).slice(-2);;
 
