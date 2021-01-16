@@ -74,7 +74,7 @@ async function run() {
         console.log('Starting loop through date...');
 
         // TODO: Change this deprecated method
-        await page.waitFor(5000);
+        await page.waitForTimeout(5000);
 
         console.log('Start evaluate...');
 
