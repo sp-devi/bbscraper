@@ -36,14 +36,14 @@ async function run() {
 
     const page = await browser.newPage();
 
-    for (let day = startDate; day <= lastDate; day++) {
+    for (let day = 1; day <= lastDate; day++) {
 
         let currentMonthOrNext = nodeDate.getMonth();
 
         if (day < startDate) {
             // Proceed to next month
-            console.log("Proceed search on next month");
-            currentMonthOrNext = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0);
+            console.log("Proceed search on to the next month");
+            currentMonthOrNext = currentMonthOrNext + 1;
         }
 
         let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
@@ -53,6 +53,7 @@ async function run() {
             continue;
         }
 
+        console.log('Start schedule search at :' + futureDate.toString());
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
             {
@@ -62,7 +63,7 @@ async function run() {
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', '0' + currentMonthOrNext.slice(-2));
+        await page.select('select[name="month"]', ('0' + currentMonthOrNext).slice(-2));
         await page.select('select[name="day"]', ('0' + futureDate.getDay()).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
