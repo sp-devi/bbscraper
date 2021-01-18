@@ -10,7 +10,7 @@ function start() {
     console.log("Starting cron job...");
     cron.schedule('0 */5 8-23 * * *', () => {
         const date = new Date();
-        console.log("Running at : " + date.getHours() + ":" + date.getMinutes());
+        console.log("Cron running at " + date.toString());
         scraper.scrape();
     }, {
         timezone: "Asia/Tokyo"
