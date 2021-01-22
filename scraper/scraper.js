@@ -35,19 +35,17 @@ async function run() {
     console.log('Browser opened...');
 
     const page = await browser.newPage();
+    //Month is only neded to be  declared once since initial is current month
+    let currentMonthOrNext = nodeDate.getMonth();
+    currentMonthOrNext = currentMonthOrNext + 1;
+    for (let day = startDate; day <= lastDate; day++) {
 
-    for (let day = 1; day <= lastDate; day++) {
-
-        let currentMonthOrNext = nodeDate.getMonth();
-
-        if (day < startDate) {
+        //if (day < startDate) {
             // Proceed to next month
-            console.log("Proceed search on to the next month");
-            currentMonthOrNext = currentMonthOrNext + 1;
-        }
+          //  console.log("Proceed search on to the next month");
 
+        //}
         let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
-
         if (!isToBeSearch(futureDate)) {
             console.log("Skipping search...");
             continue;
