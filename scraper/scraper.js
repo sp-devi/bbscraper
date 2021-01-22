@@ -39,7 +39,7 @@ async function run() {
     let currentMonthOrNext = nodeDate.getMonth();
     currentMonthOrNext = currentMonthOrNext + 1;
     for (let day = startDate; day <= lastDate; day++) {
-
+         //tofllow
         //if (day < startDate) {
             // Proceed to next month
           //  console.log("Proceed search on to the next month");
