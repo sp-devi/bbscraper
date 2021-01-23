@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const mailClient = require('../mailer/mail-client');
 const config = require('./config');
 const fs = require('fs');
-
+const moment = require('./moment/moment');
 const SEARCHABLE_DAYS = {
     SUN: 0,
     SAT: 6,
@@ -11,46 +11,26 @@ const SEARCHABLE_DAYS = {
 async function run() {
 
     console.log('Starting puppeteer...');
-
+    //set maximum days to add
+    const maxDays = 31;
     const listData = [];
-
-    // current date
-    let nodeDate = new Date();
-    // adjust 0 before single digit date
-    let startDate = nodeDate.getDate();
-    // current month
-    let month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
-    // last date of the month
-    let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
-
+    //get current date in YYYYMMDD format
+    let currentDate = moment.format('YYYYMMDD')
     console.log('Opening browser...');
-
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox'
         ]
     });
-
     console.log('Browser opened...');
-
     const page = await browser.newPage();
-    //Month is only neded to be  declared once since initial is current month
-    let currentMonthOrNext = nodeDate.getMonth();
-    currentMonthOrNext = currentMonthOrNext + 1;
-    for (let day = startDate; day <= lastDate; day++) {
-         //tofllow
-        //if (day < startDate) {
-            // Proceed to next month
-          //  console.log("Proceed search on to the next month");
-
-        //}
-        let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
+    for (let day = 1; day <= maxDays; day++) {
+        let futureDate = currentDate.add(day,'days');
         if (!isToBeSearch(futureDate)) {
             console.log("Skipping search...");
             continue;
         }
-
         console.log('Start schedule search at :' + futureDate.toString());
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
