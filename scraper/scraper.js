@@ -15,7 +15,7 @@ async function run() {
     const maxDays = 31;
     const listData = [];
     //get current date in YYYYMMDD format
-    let currentDate = moment.format('YYYYMMDD')
+    let currentDate = moment().format('YYYYMMDD');
     console.log('Opening browser...');
     const browser = await puppeteer.launch({
         args: [
@@ -26,12 +26,12 @@ async function run() {
     console.log('Browser opened...');
     const page = await browser.newPage();
     for (let day = 1; day <= maxDays; day++) {
-        let futureDate = currentDate.add(1,'days');
-        if (!isToBeSearch(futureDate)) {
+
+        if (!isToBeSearch(currentDate)) {
             console.log("Skipping search...");
             continue;
         }
-        console.log('Start schedule search at :' + futureDate.toString());
+        console.log('Start schedule search at :' + currentDate.toString());
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
             {
@@ -42,7 +42,7 @@ async function run() {
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
         await page.select('select[name="month"]', ('0' + currentMonthOrNext).slice(-2));
-        await page.select('select[name="day"]', ('0' + futureDate.getDay()).slice(-2));
+        await page.select('select[name="day"]', ('0' + currentDate.getDay()).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
@@ -84,6 +84,7 @@ async function run() {
             }
             // await page.screenshot({ path: 'screenshot.png' });
         });
+        currentDate =  moment(currentDate, 'YYYYMMDD').add(1,'days');
     }
 
     console.log('Browser closing...')
@@ -151,8 +152,8 @@ function createSendMailData(scheduleData) {
     };
 }
 
-function isToBeSearch(futureDate) {
-    switch (futureDate.getDay()) {
+function isToBeSearch(currentDate) {
+    switch (currentDate.getDay()) {
         case SEARCHABLE_DAYS.SUN:
         case SEARCHABLE_DAYS.SAT:
             return true;
