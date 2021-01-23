@@ -26,7 +26,7 @@ async function run() {
     console.log('Browser opened...');
     const page = await browser.newPage();
     for (let day = 1; day <= maxDays; day++) {
-        let futureDate = currentDate.add(day,'days');
+        let futureDate = currentDate.add(1,'days');
         if (!isToBeSearch(futureDate)) {
             console.log("Skipping search...");
             continue;
