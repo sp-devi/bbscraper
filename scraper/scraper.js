@@ -27,7 +27,7 @@ async function run() {
     const page = await browser.newPage();
     for (let day = 1; day <= maxDays; day++) {
 
-        if (!isToBeSearch(currentDate)) {
+        if (!isWeekend(currentDate)) {
             console.log("Skipping search...");
             continue;
         }
@@ -41,8 +41,8 @@ async function run() {
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', ('0' + currentMonthOrNext).slice(-2));
-        await page.select('select[name="day"]', ('0' + currentDate.getDay()).slice(-2));
+        await page.select('select[name="month"]', ('0' + moment(currentDate).format('MM'));
+        await page.select('select[name="day"]', ('0' + moment(currentDate).format('DD'));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
@@ -152,14 +152,8 @@ function createSendMailData(scheduleData) {
     };
 }
 
-function isToBeSearch(currentDate) {
-    switch (currentDate.getDay()) {
-        case SEARCHABLE_DAYS.SUN:
-        case SEARCHABLE_DAYS.SAT:
-            return true;
-        default:
-            return false;
-    }
+function isWeekend(currentDate) {
+    return moment(currentDate).isoWeekday() > 5;
 }
 
 module.exports.scrape = run;
