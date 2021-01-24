@@ -12,8 +12,6 @@ async function run() {
 
     console.log('Starting puppeteer...');
 
-    const listData = [];
-
     // current date
     let nodeDate = new Date();
     // adjust 0 before single digit date
@@ -63,8 +61,8 @@ async function run() {
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', ('0' + currentMonthOrNext).slice(-2));
-        await page.select('select[name="day"]', ('0' + futureDate.getDay()).slice(-2));
+        await page.select('select[name="month"]', ('0' + (currentMonthOrNext + 1)).slice(-2));
+        await page.select('select[name="day"]', ('0' + futureDate.getDate()).slice(-2));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
@@ -96,13 +94,13 @@ async function run() {
             console.log("Processing...");
             // Process result
             return data;
-        }).then(valueData => {
-            if (valueData.length != 0) {
-                const dayAsKey = 'day' + i;
-                let dateValueMap = {};
-                dateValueMap[dayAsKey] = valueData;
-                processContentForSending(dayAsKey, valueData);
-                listData.push(dateValueMap);
+        }).then(data => {
+            if (data.length != 0) {
+                const dayAsKey = 'day' + day;
+                console.log(data.toString());
+                processContentForSending(dayAsKey, data);
+            } else {
+                console.log(" No schedule found: ");
             }
             // await page.screenshot({ path: 'screenshot.png' });
         });
@@ -163,8 +161,6 @@ function createSendMailData(scheduleData) {
         body += ` Date : ${element.date} <br>`;
         body += ` Time : ${element.schedule} <br><br>`;
     });
-
-    body += body.toString();
 
     return {
         to: toAddress,
