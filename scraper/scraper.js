@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const mailClient = require('../mailer/mail-client');
 const config = require('./config');
 const fs = require('fs');
-const moment = require('./moment/moment');
+const moment = require('moment');
 const SEARCHABLE_DAYS = {
     SUN: 0,
     SAT: 6,
