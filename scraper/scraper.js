@@ -12,7 +12,7 @@ async function run() {
 
     console.log('Starting puppeteer...');
     //set maximum days to add
-    const maxDays = 31;
+    const maxDays = 15;
     const listData = [];
     //get current date in YYYYMMDD format
     let currentDate = moment().format('YYYYMMDD');
