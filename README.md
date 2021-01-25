@@ -8,7 +8,7 @@ Install dependecies:
 $ npm install
 ```
 
-Run program(starts cron task)
+Run program(starts cron task that runs every five minutes)
 
 ```
 $ node index.js
