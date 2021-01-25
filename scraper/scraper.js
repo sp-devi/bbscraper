@@ -41,8 +41,8 @@ async function run() {
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', ('0' + moment(currentDate).format('MM'));
-        await page.select('select[name="day"]', ('0' + moment(currentDate).format('DD'));
+        await page.select('select[name="month"]', (moment(currentDate).format('MM'));
+        await page.select('select[name="day"]', (moment(currentDate).format('DD'));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
