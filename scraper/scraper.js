@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const mailClient = require('../mailer/mail-client');
 const config = require('./config');
 const fs = require('fs');
-
+const moment = require('moment');
 const SEARCHABLE_DAYS = {
     SUN: 0,
     SAT: 6,
@@ -11,47 +11,27 @@ const SEARCHABLE_DAYS = {
 async function run() {
 
     console.log('Starting puppeteer...');
-
-    // current date
-    let nodeDate = new Date();
-    // adjust 0 before single digit date
-    let startDate = nodeDate.getDate();
-    // current month
-    let month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
-    // last date of the month
-    let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
-
+    //set maximum days to add
+    const maxDays = 15;
+    const listData = [];
+    //get current date in YYYYMMDD format
+    let currentDate = moment().format('YYYYMMDD');
     console.log('Opening browser...');
-
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox'
         ]
     });
-
     console.log('Browser opened...');
-
     const page = await browser.newPage();
+    for (let day = 1; day <= maxDays; day++) {
 
-    for (let day = 1; day <= lastDate; day++) {
-
-        let currentMonthOrNext = nodeDate.getMonth();
-
-        if (day < startDate) {
-            // Proceed to next month
-            console.log("Proceed search on to the next month");
-            currentMonthOrNext = currentMonthOrNext + 1;
-        }
-
-        let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
-
-        if (!isToBeSearch(futureDate)) {
+        if (!isWeekend(currentDate)) {
             console.log("Skipping search...");
             continue;
         }
-
-        console.log('Start schedule search at :' + futureDate.toString());
+        console.log('Start schedule search at :' + currentDate.toString());
         // await page.goto(config.url.target);
         await page.goto(config.url.target,
             {
@@ -61,8 +41,8 @@ async function run() {
 
         // Select boxes
         await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', ('0' + (currentMonthOrNext + 1)).slice(-2));
-        await page.select('select[name="day"]', ('0' + futureDate.getDate()).slice(-2));
+        await page.select('select[name="month"]', (moment(currentDate).format('MM'));
+        await page.select('select[name="day"]', (moment(currentDate).format('DD'));
         await page.select('select[name="kyoyo1"]', '07');
         await page.select('select[name="kyoyo2"]', '07');
         await page.select('select[name="chiiki"]', '20');
@@ -94,16 +74,17 @@ async function run() {
             console.log("Processing...");
             // Process result
             return data;
-        }).then(data => {
-            if (data.length != 0) {
-                const dayAsKey = 'day' + day;
-                console.log(data.toString());
-                processContentForSending(dayAsKey, data);
-            } else {
-                console.log(" No schedule found: ");
+        }).then(valueData => {
+            if (valueData.length != 0) {
+                const dayAsKey = 'day' + i;
+                let dateValueMap = {};
+                dateValueMap[dayAsKey] = valueData;
+                processContentForSending(dayAsKey, valueData);
+                listData.push(dateValueMap);
             }
             // await page.screenshot({ path: 'screenshot.png' });
         });
+        currentDate =  moment(currentDate, 'YYYYMMDD').add(1,'days');
     }
 
     console.log('Browser closing...')
@@ -162,6 +143,8 @@ function createSendMailData(scheduleData) {
         body += ` Time : ${element.schedule} <br><br>`;
     });
 
+    body += body.toString();
+
     return {
         to: toAddress,
         subject: subject,
@@ -169,14 +152,8 @@ function createSendMailData(scheduleData) {
     };
 }
 
-function isToBeSearch(futureDate) {
-    switch (futureDate.getDay()) {
-        case SEARCHABLE_DAYS.SUN:
-        case SEARCHABLE_DAYS.SAT:
-            return true;
-        default:
-            return false;
-    }
+function isWeekend(currentDate) {
+    return moment(currentDate).isoWeekday() > 5;
 }
 
 module.exports.scrape = run;
