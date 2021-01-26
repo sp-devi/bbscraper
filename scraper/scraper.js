@@ -95,12 +95,13 @@ async function run() {
             // Process result
             return data;
         }).then(data => {
+            const dayAsKey = 'day' + day;
             if (data.length != 0) {
-                const dayAsKey = 'day' + day;
                 console.log(data.toString());
                 processContentForSending(dayAsKey, data);
             } else {
                 console.log(" No schedule found: ");
+                clearRecord(dayAsKey);
             }
             // await page.screenshot({ path: 'screenshot.png' });
         });
@@ -126,6 +127,10 @@ function processContentForSending(dayAsKey, currentScrapedData) {
 
 function hasChangesBetween(oldData, newData) {
     return oldData !== JSON.stringify(newData)
+}
+
+function clearRecord(dayAsKey) {
+    writeData(dayAsKey, '');
 }
 
 function writeData(dayAsKey, data) {
