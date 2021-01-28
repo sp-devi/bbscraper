@@ -23,7 +23,10 @@ if a change is found, send mail and output the new data.
 ## Remaining task
 
  ・ Logging
+ 
  ・ Refactoring
+ 
+ ・ Fix comments
 
 ## Config files
 
