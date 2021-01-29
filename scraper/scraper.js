@@ -85,6 +85,7 @@ async function run() {
             for (const a of list) {
                 var schedule = a.nextElementSibling.nextElementSibling;
                 data.push({
+                    'location': a.previousElementSibling.innerText,
                     'name': a.innerText,
                     'link': a.querySelector('a').href,
                     'date': a.nextElementSibling.innerText,
@@ -97,7 +98,6 @@ async function run() {
         }).then(data => {
             const dayAsKey = 'day' + day;
             if (data.length != 0) {
-                console.log(data.toString());
                 processContentForSending(dayAsKey, data);
             } else {
                 console.log(" No schedule found: ");
@@ -161,6 +161,7 @@ function createSendMailData(scheduleData) {
 
     scheduleData.forEach((element, index) => {
         body += ` No : ${index + 1} <br>`;
+        body += ` Location : ${element.location} <br>`;
         body += ` Name : ${element.name} <br>`;
         body += ` Link : ${element.link} <br>`;
         body += ` Date : ${element.date} <br>`;
