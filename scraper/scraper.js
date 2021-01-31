@@ -52,7 +52,7 @@ async function run() {
         }
 
         console.log('Start schedule search at :' + futureDate.toString());
-        // await page.goto(config.url.target);
+
         await page.goto(config.url.target,
             {
                 waitUntil: 'load',
@@ -71,7 +71,6 @@ async function run() {
 
         console.log('Starting loop through date...');
 
-        // TODO: Change this deprecated method
         await page.waitForTimeout(5000);
 
         console.log('Start evaluate...');
@@ -165,7 +164,8 @@ function createSendMailData(scheduleData) {
         body += ` Name : ${element.name} <br>`;
         body += ` Link : ${element.link} <br>`;
         body += ` Date : ${element.date} <br>`;
-        body += ` Time : ${element.schedule} <br><br>`;
+        body += ` Time : ${element.schedule}>`;
+        body += "------------------------------------- <br><br>"
     });
 
     return {
