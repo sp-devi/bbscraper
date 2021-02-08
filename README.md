@@ -34,7 +34,3 @@ Replace config files with your AWS credentials, target email address, etc...
 
 ## Contributing Code
 If you would like to contribute features, refactor code, etc., please create or comment on an issue on this repo, and one of the core contributors listed below.
-
-## Core Contributors
-- [AP Dante](https://github.com/sp-devi)
-- [JL Punzalan](https://github.com/yellowemp)
