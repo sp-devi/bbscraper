@@ -12,103 +12,131 @@ async function run() {
 
     console.log('Starting puppeteer...');
 
-    // current date
-    let nodeDate = new Date();
-    // adjust 0 before single digit date
-    let startDate = nodeDate.getDate();
-    // current month
-    let month = ("0" + (nodeDate.getMonth() + 1)).slice(-2);
-    // last date of the month
-    let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
+    try {
 
-    console.log('Opening browser...');
+        // current date
+        let nodeDate = new Date();
+        // adjust 0 before single digit date
+        let startDate = nodeDate.getDate();
+        // last date of the month
+        let lastDate = new Date(nodeDate.getFullYear(), nodeDate.getMonth() + 1, 0).getDate();
 
-    const browser = await puppeteer.launch({
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox'
-        ]
-    });
+        console.log('Opening browser...');
 
-    console.log('Browser opened...');
+        const browser = await puppeteer.launch({
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox'
+            ]
+        });
 
-    const page = await browser.newPage();
+        console.log('Browser opened...');
 
-    for (let day = 1; day <= lastDate; day++) {
+        const page = await browser.newPage();
 
-        let currentMonthOrNext = nodeDate.getMonth();
+        for (let day = 1; day <= lastDate; day++) {
 
-        if (day < startDate) {
-            // Proceed to next month
-            console.log("Proceed search on to the next month");
-            currentMonthOrNext = currentMonthOrNext + 1;
-        }
+            let currentMonthOrNext = nodeDate.getMonth();
 
-        let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
+            if (day < startDate) {
+                // Proceed to next month
+                console.log("Proceed search on to the next month");
+                currentMonthOrNext = currentMonthOrNext + 1;
+            }
 
-        if (!isToBeSearch(futureDate)) {
-            console.log("Skipping search...");
-            continue;
-        }
+            let futureDate = new Date(nodeDate.getFullYear(), currentMonthOrNext, day);
 
-        console.log('Start schedule search at :' + futureDate.toString());
+            if (!isToBeSearch(futureDate)) {
+                console.log("Skipping search...");
+                continue;
+            }
 
-        await page.goto(config.url.target,
-            {
-                waitUntil: 'load',
-                timeout: 0
+            console.log('Start schedule search at :' + futureDate.toString());
+
+            await page.goto(config.url.target,
+                {
+                    waitUntil: 'load',
+                    timeout: 0
+                });
+
+            // Select boxes
+            await page.select('select[name="syumoku"]', '023');
+            await page.select('select[name="month"]', ('0' + (currentMonthOrNext + 1)).slice(-2));
+            await page.select('select[name="day"]', ('0' + futureDate.getDate()).slice(-2));
+            await page.select('select[name="kyoyo1"]', '07');
+            await page.select('select[name="kyoyo2"]', '07');
+            await page.select('select[name="chiiki"]', '20');
+            await page.click('input[name="joken"][value="1"]');
+            await page.click('input[type="submit"][name="button"]');
+
+            console.log('Starting loop through date...');
+
+            await page.waitForTimeout(5000);
+
+            console.log('Start evaluate...');
+
+            let data = await page.evaluate(() => {
+                let data = [];
+                const list = document.querySelectorAll('.RESOUTPUT2');
+            
+                console.log('Evaluating...');
+            
+                for (const a of list) {
+                    var schedule = a.nextElementSibling.nextElementSibling;
+                    data.push({
+                        'location': a.previousElementSibling.innerText,
+                        'name': a.innerText,
+                        'link': a.querySelector('a').href,
+                        'date': a.nextElementSibling.innerText,
+                        'schedule': schedule.innerText,
+                    });
+                }
+                console.log("Processing...");
+                // Process result
+                return data;
             });
 
-        // Select boxes
-        await page.select('select[name="syumoku"]', '023');
-        await page.select('select[name="month"]', ('0' + (currentMonthOrNext + 1)).slice(-2));
-        await page.select('select[name="day"]', ('0' + futureDate.getDate()).slice(-2));
-        await page.select('select[name="kyoyo1"]', '07');
-        await page.select('select[name="kyoyo2"]', '07');
-        await page.select('select[name="chiiki"]', '20');
-        await page.click('input[name="joken"][value="1"]');
-        await page.click('input[type="submit"][name="button"]');
+            processWebSearchResult(day, data);
+        }
 
-        console.log('Starting loop through date...');
+        console.log('Browser closing...')
+        page.close();
+        browser.close();
 
-        await page.waitForTimeout(5000);
+    } catch (err) {
+        console.log(err)
+    }
+}
 
-        console.log('Start evaluate...');
+function getPageResults() {
+    let data = [];
+    const list = document.querySelectorAll('.RESOUTPUT2');
 
-        await page.evaluate(() => {
-            let data = [];
-            const list = document.querySelectorAll('.RESOUTPUT2');
+    console.log('Evaluating...');
 
-            console.log('Evaluating...');
-
-            for (const a of list) {
-                var schedule = a.nextElementSibling.nextElementSibling;
-                data.push({
-                    'location': a.previousElementSibling.innerText,
-                    'name': a.innerText,
-                    'link': a.querySelector('a').href,
-                    'date': a.nextElementSibling.innerText,
-                    'schedule': schedule.innerText,
-                });
-            }
-            console.log("Processing...");
-            // Process result
-            return data;
-        }).then(data => {
-            const dayAsKey = 'day' + day;
-            if (data.length != 0) {
-                processContentForSending(dayAsKey, data);
-            } else {
-                console.log(" No schedule found: ");
-                clearRecord(dayAsKey);
-            }
-            // await page.screenshot({ path: 'screenshot.png' });
+    for (const a of list) {
+        var schedule = a.nextElementSibling.nextElementSibling;
+        data.push({
+            'location': a.previousElementSibling.innerText,
+            'name': a.innerText,
+            'link': a.querySelector('a').href,
+            'date': a.nextElementSibling.innerText,
+            'schedule': schedule.innerText,
         });
     }
+    console.log("Processing...");
+    // Process result
+    return data;
+}
 
-    console.log('Browser closing...')
-    page.close();
-    browser.close();
+function processWebSearchResult(day, data) {
+    const dayAsKey = 'day' + day;
+    if (data.length != 0) {
+        processContentForSending(dayAsKey, data);
+    } else {
+        console.log(" No schedule found: ");
+        clearRecord(dayAsKey);
+    }
 }
 
 //TODO follow future project
@@ -118,7 +146,7 @@ function processContentForSending(dayAsKey, currentScrapedData) {
 
             console.log('Has changes for ' + dayAsKey);
 
-            mailClient.sendEmail(createSendMailData(currentScrapedData));
+            // mailClient.sendEmail(createSendMailData(currentScrapedData));
             writeData(dayAsKey, currentScrapedData);
         }
     });

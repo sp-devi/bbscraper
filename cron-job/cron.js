@@ -33,4 +33,6 @@ function end() {
     // write end task function hereg
 }
 
+start();
+
 module.exports.cronJob = cronJob;
