@@ -108,27 +108,6 @@ async function run() {
     }
 }
 
-function getPageResults() {
-    let data = [];
-    const list = document.querySelectorAll('.RESOUTPUT2');
-
-    console.log('Evaluating...');
-
-    for (const a of list) {
-        var schedule = a.nextElementSibling.nextElementSibling;
-        data.push({
-            'location': a.previousElementSibling.innerText,
-            'name': a.innerText,
-            'link': a.querySelector('a').href,
-            'date': a.nextElementSibling.innerText,
-            'schedule': schedule.innerText,
-        });
-    }
-    console.log("Processing...");
-    // Process result
-    return data;
-}
-
 function processWebSearchResult(day, data) {
     const dayAsKey = 'day' + day;
     if (data.length != 0) {
