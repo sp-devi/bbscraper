@@ -78,9 +78,9 @@ async function run() {
             let data = await page.evaluate(() => {
                 let data = [];
                 const list = document.querySelectorAll('.RESOUTPUT2');
-            
+
                 console.log('Evaluating...');
-            
+
                 for (const a of list) {
                     var schedule = a.nextElementSibling.nextElementSibling;
                     data.push({
@@ -125,7 +125,7 @@ function processContentForSending(dayAsKey, currentScrapedData) {
 
             console.log('Has changes for ' + dayAsKey);
 
-            // mailClient.sendEmail(createSendMailData(currentScrapedData));
+            mailClient.sendEmail(createSendMailData(currentScrapedData));
             writeData(dayAsKey, currentScrapedData);
         }
     });
