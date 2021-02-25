@@ -171,7 +171,7 @@ function createSendMailData(scheduleData) {
         body += ` Name : ${element.name} <br>`;
         body += ` Link : ${element.link} <br>`;
         body += ` Date : ${element.date} <br>`;
-        body += ` Time : ${element.schedule}>`;
+        body += ` Time : ${element.schedule} <br>`;
         body += "------------------------------------- <br><br>"
     });
 
