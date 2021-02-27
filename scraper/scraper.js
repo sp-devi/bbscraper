@@ -118,7 +118,6 @@ function processWebSearchResult(day, data) {
     }
 }
 
-//TODO follow future project
 function processContentForSending(dayAsKey, currentScrapedData) {
     readData(dayAsKey, function (data) {
         if (hasChangesBetween(data, currentScrapedData)) {
