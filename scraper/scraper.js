@@ -104,7 +104,7 @@ async function run() {
         browser.close();
 
     } catch (err) {
-        console.log(err)
+        throw new Error(err);
     }
 }
 

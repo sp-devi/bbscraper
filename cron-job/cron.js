@@ -12,7 +12,7 @@ function start() {
     cron.schedule(writeCronExpression(), () => {
         const date = new Date();
         console.log("Cron running at " + date.toString());
-        scraper.scrape();
+        scraper.scrape().catch(err => console.log(err));
     }, {
         timezone: "Asia/Tokyo"
     });
