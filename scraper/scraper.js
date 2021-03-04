@@ -12,6 +12,7 @@ async function run() {
 
     console.log('Starting puppeteer...');
 
+    // TODO: Something is still throwing uncaught exception, fix this
     try {
 
         // current date
