@@ -14,7 +14,7 @@ function start() {
         console.log("Cron running at " + date.toString());
 
         try {
-            scraper.scrape();
+            scraper.scrape().catch(err => { console.log(err)});
         } catch(err) {
             console.log(err);
         }
