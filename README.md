@@ -26,6 +26,8 @@ if a change is found, send mail and output the new data.
 
  
  ・ Fix comments
+ 
+ ・ Fix unhandled exception(puppeteer instance not catching error)
 
 ## Config files
 
