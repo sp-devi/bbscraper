@@ -35,6 +35,22 @@ async function run() {
 
         const page = await browser.newPage();
 
+        // Catching errors
+        page.on('requestfailed', request => {
+            console.log('Request failed...');
+            console.log(request);
+        });
+
+        page.on('pageerror', error => {
+            console.log('Browser page error...');
+            console.log(error);
+        });
+
+        page.on('console', msg => {
+            console.log('Catching console error messages');
+            console.log(msg.text);
+        });
+
         for (let day = 1; day <= lastDate; day++) {
 
             let currentMonthOrNext = nodeDate.getMonth();
