@@ -5,4 +5,8 @@
 // scraper.scrape();
 const cron = require('./cron-job/cron');
 
-cron.cronJob.start();
+try {
+    cron.cronJob.start();
+} catch(err) {
+    console.log(err);
+}
