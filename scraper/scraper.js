@@ -29,27 +29,11 @@ async function run() {
                 '--no-sandbox',
                 '--disable-setuid-sandbox'
             ]
-        });
+        }).catch((error) => { console.error(error) });
 
         console.log('Browser opened...');
 
-        const page = await browser.newPage();
-
-        // Catching errors
-        page.on('requestfailed', request => {
-            console.log('Request failed...');
-            console.log(request);
-        });
-
-        page.on('pageerror', error => {
-            console.log('Browser page error...');
-            console.log(error);
-        });
-
-        page.on('console', msg => {
-            console.log('Catching console error messages');
-            console.log(msg.text);
-        });
+        const page = await browser.newPage().catch((error) => { console.error(error) });
 
         for (let day = 1; day <= lastDate; day++) {
 
@@ -74,7 +58,7 @@ async function run() {
                 {
                     waitUntil: 'load',
                     timeout: 0
-                });
+                }).catch((error) => { console.error(error) });;
 
             // Select boxes
             await page.select('select[name="syumoku"]', '023');
