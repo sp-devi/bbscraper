@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const SEARCHABLE_DAYS = {
     SUN: 0,
-    SAT: 6,
+    SAT: 6
 }
 
 async function run() {
