@@ -22,9 +22,11 @@ if a change is found, send mail and output the new data.
 
 ## Cron setting
 
+```
 CRON_TZ=Asia/Tokyo
 0 8 * * * docker run -d --name bbscraper_0 spdevi/bbscraper
 0 0 * * * docker stop bbscraper_0
+```
 
 ## Remaining task
 
